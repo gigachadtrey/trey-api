@@ -27,8 +27,7 @@ groq_client = Groq(api_key=GROQ_API_KEY)
 
 @app.route('/ping')
 def index():
-    # In serverless environments, you may not have template files.
-    # For simplicity, we return a basic HTML response.
+    # Return a simple HTML response for testing
     return "<h1>Hello from Flask on Vercel!</h1>"
 
 @app.route('/generate', methods=['POST'])
@@ -87,20 +86,23 @@ def generate_groq_content():
         return jsonify({"error": "No input provided"}), 400
 
     try:
+        # Enable streaming for the Groq API call
         stream = groq_client.chat.completions.create(
             messages=[{"role": "user", "content": user_input}],
             model=model_name,
             stream=True
         )
         
+        # Generator to stream tokens as they arrive
         def generate():
             for chunk in stream:
                 token = chunk.choices[0].delta.get("content", "")
                 if token:
-                    yield token + " "  # Add a space after each token
-                    sys.stdout.flush()
+                    yield token + " "  # Add a space after each token for readability
+                    sys.stdout.flush()  # Force flush the output buffer
 
         return Response(stream_with_context(generate()), mimetype='text/plain')
+
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": f"Failed to generate content: {str(e)}"}), 500
@@ -112,5 +114,5 @@ def get_gemini_key():
         return jsonify({"error": "Unauthorized"}), 403
     return jsonify({"GEMINI_API_KEY": GEMINI_API_KEY}), 200
 
-# Expose the Flask app as the handler for Vercel's serverless function
-handler = app
+# Expose the WSGI callable for Vercel
+handler = app.wsgi_app
