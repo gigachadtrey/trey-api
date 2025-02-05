@@ -15,6 +15,10 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 
+@app.route('/ping')
+def ping():
+    return "pong"
+
 # Check if API keys are available
 if not GEMINI_API_KEY or not GROQ_API_KEY:
     raise ValueError("API keys not set in environment variables.")
