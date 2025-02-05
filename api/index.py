@@ -25,7 +25,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 # Configure the Groq API client
 groq_client = Groq(api_key=GROQ_API_KEY)
 
-@app.route('/')
+@app.route('/ping')
 def index():
     # In serverless environments, you may not have template files.
     # For simplicity, we return a basic HTML response.
