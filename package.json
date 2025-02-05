@@ -1,0 +1,11 @@
+{
+  "name": "gemini-websim-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "@gemini-ai/sdk": "^1.0.0"
+  }
+}
